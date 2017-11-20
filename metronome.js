@@ -6,23 +6,27 @@ let metronomeActive = false
 bpmField.value = 60
 
 function metronome() {
-	
-	let timeout
 
 	function tick() {
-		timeout = setTimeout(() => {audio.currentTime = 0; audio.play(); tick()}, 60000/self.bpm)
+		let dt = Date.now() - self.expected
+		console.log(60000/self.bpm-dt)
+		self.expected += 60000/self.bpm
+		let timeout = setTimeout(() => {audio.currentTime = 0; audio.play(); tick()}, 60000/self.bpm - dt)
 	}
 
 	const self = {
 		start : function start() {
-			tick()
 			self.active = true
+			self.expected = Date.now() + 60000/self.bpm
+			console.log(self.expected)
+			tick()
 		},
 		stop : function stop() {
 			self.active = false
 			clearTimeout(timeout)
 		},
 		bpm : bpmField.value,
+		expected : null,
 		active : false
 	}
 	return self
