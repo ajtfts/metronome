@@ -1,0 +1,38 @@
+html {
+	font-family: 'Open Sans';
+}
+
+h1 {
+	margin: 0;
+	color: grey;
+}
+
+button {
+	height:0;
+	width:0;
+}
+
+#bpmSlider {
+	top: 60%;
+	width: 75%;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.centered-x {
+	position: fixed;
+	left: 50%;
+	transform: translate(-50%, 0);
+}
+
+.centered-y {
+	position: fixed;
+	top: 50%;
+	transform: translate(0, 50%);
+}
