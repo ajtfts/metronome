@@ -1,3 +1,4 @@
+let worker = new Worker("/worker.js")
 let audio = new Audio('metronome.wav')
 let toggleButton = document.getElementById("toggle")
 let bpmHeader = document.getElementById("bpmHeader")
@@ -10,36 +11,26 @@ let minus5 = document.getElementById("minus5")
 bpmHeader.innerHTML = bpmSlider.value
 ball.disabled = true
 
+worker.onmessage = (e) => {
+	audio.currentTime = 0
+	audio.play()
+}
+
 function metronome() {
-
-	let timeout;
-
-	function tick() {
-		let dt = Date.now() - self.expected
-		if (self.active) {
-			timeout = setTimeout(() => {tick(); audio.currentTime = 0; audio.play()}, 60000/self.bpm-dt)
-		}
-		self.expected += 60000/self.bpm
-	}
 
 	const self = {
 		start : function start() {
 			self.active = true
 			ball.value = 0
-			self.expected = Date.now()
-			audio.currentTime = 0
-			audio.play()
-			tick()
+			worker.postMessage(self.bpm)
+			worker.postMessage("start")
 		},
 		stop : function stop() {
 			self.active = false
 			ball.value = 50
-			if (timeout) {
-				clearTimeout(timeout)
-			}
+			worker.postMessage("stop")
 		},
-		bpm : parseInt(bpmSlider.value),
-		expected : null,
+		bpm : 60,
 		active : false
 	}
 	return self
@@ -49,29 +40,34 @@ m = metronome()
 
 bpmSlider.oninput = () => {
 	m.bpm = parseInt(bpmSlider.value)
+	worker.postMessage(m.bpm)
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 plus1.onclick = () => {
 	m.bpm += 1
+	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) + 1
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 minus1.onclick = () => {
 	m.bpm -= 1
+	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) - 1
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 plus5.onclick = () => {
 	m.bpm += 5
+	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) + 5
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 minus5.onclick = () => {
 	m.bpm -= 5
+	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) - 5
 	bpmHeader.innerHTML = bpmSlider.value
 }
