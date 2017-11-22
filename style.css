@@ -21,17 +21,25 @@ button {
 	background-color: grey;
 }
 
-#control-left {
+#control-content {
+	position: absolute;
+	margin: auto;
+	left: 50%;
+	transform: translate(-50%, 0);
 	width: 50%;
+	height: 100%;
 }
 
 #bpmSlider {
-	top: 60%;
-	width: 80%;
-	margin: 1%;
+	width: 95%;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
 }
 
 #tempoButtons {
+	position: absolute;
+	margin-right: 2.5%;
+	right: 0;
 }
 
 #ball {

@@ -3,13 +3,11 @@ let audio = new Audio('metronome.wav')
 let toggleButton = document.getElementById("toggle")
 let bpmHeader = document.getElementById("bpmHeader")
 let bpmSlider = document.getElementById("bpmSlider")
-let ball = document.getElementById("ball")
 let plus1 = document.getElementById("plus1")
 let minus1 = document.getElementById("minus1")
 let plus5 = document.getElementById("plus5")
 let minus5 = document.getElementById("minus5")
 bpmHeader.innerHTML = bpmSlider.value
-ball.disabled = true
 
 worker.onmessage = (e) => {
 	audio.currentTime = 0
@@ -21,13 +19,11 @@ function metronome() {
 	const self = {
 		start : function start() {
 			self.active = true
-			ball.value = 0
 			worker.postMessage(self.bpm)
 			worker.postMessage("start")
 		},
 		stop : function stop() {
 			self.active = false
-			ball.value = 50
 			worker.postMessage("stop")
 		},
 		bpm : 60,
