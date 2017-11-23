@@ -1,3 +1,3 @@
 # metronome
 Simple web based metronome
-https://metronome.aidantaylor.io
+http://metronome.aidantaylor.io
