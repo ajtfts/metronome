@@ -9,8 +9,9 @@ let minus1 = document.getElementById("minus1")
 let plus5 = document.getElementById("plus5")
 let minus5 = document.getElementById("minus5")
 let tap = document.getElementById("tap")
-
 bpmHeader.innerHTML = bpmSlider.value
+
+let beatList = [], bpmList = [], t
 
 function metronome() {
 
@@ -48,36 +49,51 @@ bpmSlider.oninput = () => {
 }
 
 plus1.onclick = () => {
-	m.bpm += 1
-	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) + 1
+	m.bpm = bpmSlider.value
+	worker.postMessage(m.bpm)
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 minus1.onclick = () => {
-	m.bpm -= 1
-	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) - 1
+	m.bpm = bpmSlider.value
+	worker.postMessage(m.bpm)
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 plus5.onclick = () => {
-	m.bpm += 5
-	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) + 5
+	m.bpm = bpmSlider.value
+	worker.postMessage(m.bpm)
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 minus5.onclick = () => {
-	m.bpm -= 5
-	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) - 5
+	m.bpm = bpmSlider.value
+	worker.postMessage(m.bpm)
 	bpmHeader.innerHTML = bpmSlider.value
 }
 
 tap.onclick = () => {
 	audio.currentTime = 0
 	audio.play()
+	clearTimeout(t)
+	t = setTimeout(() => {beatList = []; bpmList = []}, 60000/40)
+	beatList.push(performance.now())
+	if (beatList.length > 1) {
+		bpmList.push(beatList[beatList.length-1]-beatList[beatList.length-2])
+	}
+	let sum = 0
+	for (let i = 0; i < bpmList.length; i++) {
+		sum += bpmList[i]
+	}
+	let bpmAvg = sum/bpmList.length
+	bpmSlider.value = 60000/bpmAvg
+	m.bpm = bpmSlider.value
+	worker.postMessage(m.bpm)
+	bpmHeader.innerHTML = bpmSlider.value
 }
 
 toggleButton.onclick = () => {
