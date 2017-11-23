@@ -2,28 +2,28 @@ let worker = new Worker("/worker.js")
 let audio = new Audio('metronome.wav')
 let toggleButton = document.getElementById("toggle")
 let bpmHeader = document.getElementById("bpmHeader")
+let pulse = document.getElementById("pulse")
 let bpmSlider = document.getElementById("bpmSlider")
 let plus1 = document.getElementById("plus1")
 let minus1 = document.getElementById("minus1")
 let plus5 = document.getElementById("plus5")
 let minus5 = document.getElementById("minus5")
-bpmHeader.innerHTML = bpmSlider.value
+let tap = document.getElementById("tap")
 
-worker.onmessage = (e) => {
-	audio.currentTime = 0
-	audio.play()
-}
+bpmHeader.innerHTML = bpmSlider.value
 
 function metronome() {
 
 	const self = {
 		start : function start() {
 			self.active = true
+			tap.disabled = true
 			worker.postMessage(self.bpm)
 			worker.postMessage("start")
 		},
 		stop : function stop() {
 			self.active = false
+			tap.disabled = false
 			worker.postMessage("stop")
 		},
 		bpm : 60,
@@ -33,6 +33,13 @@ function metronome() {
 }
 
 m = metronome()
+
+worker.onmessage = (e) => {
+	audio.currentTime = 0
+	audio.play()
+	pulse.setAttribute("opacity", 0.2)
+	setTimeout(() => {pulse.setAttribute("opacity", 0)}, 100)
+}
 
 bpmSlider.oninput = () => {
 	m.bpm = parseInt(bpmSlider.value)
@@ -66,6 +73,11 @@ minus5.onclick = () => {
 	worker.postMessage(m.bpm)
 	bpmSlider.value = parseInt(bpmSlider.value) - 5
 	bpmHeader.innerHTML = bpmSlider.value
+}
+
+tap.onclick = () => {
+	audio.currentTime = 0
+	audio.play()
 }
 
 toggleButton.onclick = () => {
